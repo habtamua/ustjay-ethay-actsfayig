@@ -28,27 +28,33 @@ def get_fact():
 
     return facts[0].getText()
 
-def get_url(fact):
-    """
-    Get the URL and display it on home page.
-    to get the URL need to send a request to the Pig-Latin app with the text form data as the payload.
-    The response to this will have the URL that we want to display as an HTTP Header, we also need to disable the redirect request/response.
-    :params: fact
-    :return: url location is the Response headers
-    """
+# def get_url(fact):
+#     """
+#     Get the URL and display it on home page.
+#     to get the URL need to send a request to the Pig-Latin app with the text form data as the payload.
+#     The response to this will have the URL that we want to display as an HTTP Header, we also need to disable the redirect request/response.
+#     :params: fact
+#     :return: url location is the Response headers
+#     """
 
-    response =  requests.post(URL, data={'input_text':fact}, allow_redirects=False)
-    result = response.headers['Location']
+#     response =  requests.post(URL, data={'input_text':fact}, allow_redirects=False)
 
-    return "<a href='{}'>{}</a>".format(result, result)
+#     return response.headers['Location']
 
 
 @app.route('/')
 def home():
     fact = get_fact().strip()
-    piglatinize_url = get_url(fact)
+    url = 'http://talkobamato.me/synthesize.py'
 
-    return Response(response=piglatinize_url, mimetype="text/html")
+    data = {'input_text': fact }
+    response = requests.post(url, data=data, allow_redirects=False)
+    obama_url = response.headers['Location']
+
+    return "<a href='{}'>{}</a>".format(obama_url, obama_url)
+    # piglatinize_url = get_url(fact)
+
+    # return Response(response=piglatinize_url, mimetype="text/html")
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 6787))
